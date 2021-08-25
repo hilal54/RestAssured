@@ -7,8 +7,7 @@ import static org.hamcrest.Matchers.*;
 public class ZippoTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         given()
                 // hazırlık işlemlerini yapcağız
 
@@ -16,13 +15,12 @@ public class ZippoTest {
                 // link ve aksiyon işlemleri
 
                 .then()
-                // test ve extract işlemleri
+        // test ve extract işlemleri
         ;
     }
 
     @Test
-    public void statusCodeTest()
-    {
+    public void statusCodeTest() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
@@ -33,20 +31,18 @@ public class ZippoTest {
     }
 
     @Test
-    public void contentTypeTest()
-    {
+    public void contentTypeTest() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
                 .log().body()
                 .contentType(ContentType.JSON)
-                ;
+        ;
     }
 
     @Test
-    public void logTest()
-    {
+    public void logTest() {
         given()
                 .log().all()
                 .when()
@@ -54,12 +50,11 @@ public class ZippoTest {
 
                 .then()
                 .log().body()
-                ;
+        ;
     }
 
     @Test
-    public void checkStateInResponseBody()
-    {
+    public void checkStateInResponseBody() {
         given()
 
                 .when()
@@ -67,14 +62,13 @@ public class ZippoTest {
 
                 .then()
                 .log().body()
-                .body("country", equalTo("United States") ) // body.country == United States
+                .body("country", equalTo("United States")) // body.country == United States
                 .statusCode(200)
         ;
     }
 
     @Test
-    public void bodyJsonPathTest2()
-    {
+    public void bodyJsonPathTest2() {
         given()
 
                 .when()
@@ -84,12 +78,11 @@ public class ZippoTest {
                 .log().body()
                 .body("places[0].state", equalTo("California"))
                 .statusCode(200)
-                ;
+        ;
     }
 
     @Test
-    public void bodyJsonPathTestHasItem()
-    {
+    public void bodyJsonPathTestHasItem() {
         given()
 
                 .when()
@@ -107,8 +100,7 @@ public class ZippoTest {
     }
 
     @Test
-    public void bodyJsonPathTest4()
-    {
+    public void bodyJsonPathTest4() {
         given()
 
                 .when()
@@ -117,14 +109,13 @@ public class ZippoTest {
                 .then()
                 .log().body()
                 .body("places[0].'place name'", equalTo("Beverly Hills"))
-        // arasında bosluk olan key lerde keyin başına ve sonuna tek tırnak konur ('place name')
+                // arasında bosluk olan key lerde keyin başına ve sonuna tek tırnak konur ('place name')
                 .statusCode(200)
         ;
     }
 
     @Test
-    public void bodyArrayHasSizeTest()
-    {
+    public void bodyArrayHasSizeTest() {
         given()
 
                 .when()
@@ -138,8 +129,7 @@ public class ZippoTest {
     }
 
     @Test
-    public void combiningTest()
-    {
+    public void combiningTest() {
         given()
 
                 .when()
@@ -149,11 +139,52 @@ public class ZippoTest {
                 .body("places", hasSize(1))
                 .body("places.state", hasItem("California"))
                 .body("places[0].'place name'", equalTo("Beverly Hills"))
+                // 1 den fazla assertion yapılabilir.
                 .statusCode(200)
         ;
     }
 
+    @Test
+    public void pathParamTest() {
+        String country = "us";
+        String zipKod = "90210";
 
+        given()
+                .pathParam("country", country)
+                .pathParam("zipKod", zipKod)
+                .log().uri() //request linki
+
+                .when()
+                .get("http://api.zippopotam.us/{country}/{zipKod}")
+
+                .then()
+                .log().body()
+                .body("places", hasSize(1))
+        ;
+    }
+
+    @Test
+    public void pathParamTest2() {
+        String country = "us";
+
+        for (Integer i = 90210; i < 90220; i++) {
+            String zipKod = i.toString();
+
+            given()
+                    .pathParam("country", country)
+                    .pathParam("zipKod", zipKod)
+                    .log().uri() //request linki
+
+                    .when()
+                    .get("http://api.zippopotam.us/{country}/{zipKod}")
+
+                    .then()
+                    .log().body()
+                    .body("places", hasSize(1))
+            ;
+        }
+
+    }
 
 
 }
