@@ -209,7 +209,7 @@ public class ZippoTest {
     {
         for(int page=1;page<=10;page++) {
             given()
-                    .param("page", 1)
+                    .param("page", page)
                     .log().uri()
 
                     .when()
