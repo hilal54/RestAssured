@@ -100,7 +100,32 @@ public class ZippoTest {
                 .body("places.state", hasItem("California"))  // bütün state lerde aranan eleman var mı?
                 .statusCode(200)
         ;
+
+//        places[0].state -> listin 0 indexli elemanının state değerini verir, 1 değer
+//        places.state ->    Bütün listteki state leri bir list olarak verir : California,California2   hasItem
+//        List<String> list= {'California','California2'}
     }
+
+    @Test
+    public void bodyJsonPathTest4()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("places[0].'place name'", equalTo("Beverly Hills"))
+        // arasında bosluk olan key lerde keyin başına ve sonuna tek tırnak konur ('place name')
+                .statusCode(200)
+        ;
+    }
+
+
+
+
+
 
 
 }
