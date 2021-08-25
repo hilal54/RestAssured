@@ -198,13 +198,29 @@ public class ZippoTest {
                 .when()
                 .get("https://gorest.co.in/public/v1/users")
 
-
                 .then()
                 .log().body()
                 .body("meta.pagination.page", equalTo(1));
         ;
     }
 
+    @Test
+    public void queryParamTestCoklu()
+    {
+        for(int page=1;page<=10;page++) {
+            given()
+                    .param("page", 1)
+                    .log().uri()
+
+                    .when()
+                    .get("https://gorest.co.in/public/v1/users")
+
+                    .then()
+                    .log().body()
+                    .body("meta.pagination.page", equalTo(page));
+        }
+        ;
+    }
 
 
 }
