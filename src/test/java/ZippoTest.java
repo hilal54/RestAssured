@@ -131,13 +131,27 @@ public class ZippoTest {
                 .get("http://api.zippopotam.us/us/90210")
 
                 .then()
-                .body("places", hasSize(1)) // verilen path deli listin size kontrolü
+                .body("places", hasSize(1)) // verilen path deki listin size kontrolü
                 .log().body()
                 .statusCode(200)
         ;
     }
 
+    @Test
+    public void combiningTest()
+    {
+        given()
 
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .body("places", hasSize(1))
+                .body("places.state", hasItem("California"))
+                .body("places[0].'place name'", equalTo("Beverly Hills"))
+                .statusCode(200)
+        ;
+    }
 
 
 
