@@ -122,6 +122,20 @@ public class ZippoTest {
         ;
     }
 
+    @Test
+    public void bodyArrayHasSizeTest()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .body("places", hasSize(1)) // verilen path deli listin size kontrolü
+                .log().body()
+                .statusCode(200)
+        ;
+    }
 
 
 
