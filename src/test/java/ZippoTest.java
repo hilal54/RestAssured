@@ -87,7 +87,20 @@ public class ZippoTest {
                 ;
     }
 
+    @Test
+    public void bodyJsonPathTestHasItem()
+    {
+        given()
 
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("places.state", hasItem("California"))  // bütün state lerde aranan eleman var mı?
+                .statusCode(200)
+        ;
+    }
 
 
 }
