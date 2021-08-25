@@ -167,12 +167,12 @@ public class ZippoTest {
     public void pathParamTest2() {
         String country = "us";
 
-        for (Integer i = 90210; i < 90220; i++) {
-            String zipKod = i.toString();
+        for (int i = 90210; i < 90214; i++) {
+            //String zipKod = i.toString();
 
             given()
                     .pathParam("country", country)
-                    .pathParam("zipKod", zipKod)
+                    .pathParam("zipKod", i)
                     .log().uri() //request linki
 
                     .when()
@@ -185,6 +185,26 @@ public class ZippoTest {
         }
 
     }
+
+
+    // https://gorest.co.in/public/v1/users?page=1
+    @Test
+    public void queryParamTest()
+    {
+        given()
+                .param("page",1)
+                .log().uri()
+
+                .when()
+                .get("https://gorest.co.in/public/v1/users")
+
+
+                .then()
+                .log().body()
+                .body("meta.pagination.page", equalTo(1));
+        ;
+    }
+
 
 
 }
