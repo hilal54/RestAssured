@@ -289,6 +289,42 @@ public class ZippoTest {
     }
 
 
+    // Json exract
+    @Test
+    public void extractingJsonPath()
+    {
+        String place_name = given()
+                //.spec(requestSpecification)
+                .when()
+                .get("/us/90210")
+                .then()
+                .spec(responseSpecification)
+                .extract().path("places[0].'place name'")  // extract metodu ile given ile başlayan satır, bir değer döndürür hale geldi
+        ;
+
+        System.out.println("place name = " + place_name);
+    }
+
+
+    @Test
+    public void extractingJsonPathInt()
+    {
+        int limit=
+        given()
+                .param("page",1)
+                //.log().uri()
+
+                .when()
+                .get("https://gorest.co.in/public/v1/users")
+
+                .then()
+                //.log().body()
+                .extract().path("meta.pagination.limit");
+        ;
+
+        System.out.println("limit = " + limit);
+    }
+
 
 
 
