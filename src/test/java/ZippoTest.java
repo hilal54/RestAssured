@@ -1,4 +1,5 @@
 import io.restassured.http.ContentType;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.*;
@@ -221,6 +222,29 @@ public class ZippoTest {
         }
         ;
     }
+
+    @BeforeClass
+    public void setup()
+    {
+        baseURI ="http://api.zippopotam.us";   // RestAssured kendi statik değişkeni tanımlı değer atanıyor.
+    }
+
+
+    @Test
+    public void bodyArrayHasSizeTest_baseUriTest() {
+        given()
+                .log().uri()
+                .when()
+                .get("/us/90210")// url nin başında http yoksa baseUri deki değer otomatik geliyor.
+
+                .then()
+                .body("places", hasSize(1)) // verilen path deki listin size kontrolü
+                .log().body()
+                .statusCode(200)
+        ;
+    }
+
+
 
 
 }
