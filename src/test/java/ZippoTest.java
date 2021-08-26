@@ -358,7 +358,7 @@ public class ZippoTest {
                 .when()
                 .get("/tr/01000")
                 .then()
-                //.spec(responseSpecification)
+                .spec(responseSpecification)
                 .extract().path("places.'place name'")  // extract metodu ile given ile başlayan satır, bir değer döndürür hale geldi
                 ;
 
