@@ -1,4 +1,7 @@
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.specification.ResponseSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -223,12 +226,32 @@ public class ZippoTest {
         ;
     }
 
+    private ResponseSpecification responseSpecification;
+
     @BeforeClass
     public void setup()
     {
         baseURI ="http://api.zippopotam.us";   // RestAssured kendi statik değişkeni tanımlı değer atanıyor.
+
+        responseSpecification = new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .expectContentType(ContentType.JSON)
+                .log(LogDetail.BODY)
+                .build();
     }
 
+    @Test
+    public void bodyArrayHasSizeTest_responseSpecification() {
+        given()
+                .log().uri()
+                .when()
+                .get("/us/90210")// url nin başında http yoksa baseUri deki değer otomatik geliyor.
+
+                .then()
+                .body("places", hasSize(1)) // verilen path deki listin size kontrolü
+                .spec(responseSpecification)
+        ;
+    }
 
     @Test
     public void bodyArrayHasSizeTest_baseUriTest() {
@@ -243,6 +266,7 @@ public class ZippoTest {
                 .statusCode(200)
         ;
     }
+
 
 
 
