@@ -1,3 +1,4 @@
+import POJO.Location;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -365,6 +366,25 @@ public class ZippoTest {
         System.out.println("koyler = " + koyler);
         Assert.assertTrue(koyler.contains("Büyükdikili Köyü"));
     }
+
+    @Test
+    public void extractingJsonPOJO() // POJO : JSon Object i
+    {
+        Location location=
+        given()
+                .when()
+                .get("/us/90210")
+
+                .then()
+                .extract().as(Location.class);
+        ;
+
+        System.out.println("location = " + location);
+        System.out.println("location.getCountry() = " + location.getCountry());
+        System.out.println("location.getPlaces() = " + location.getPlaces());
+        System.out.println("location.getPlaces().get(0).getPlacename() = " + location.getPlaces().get(0).getPlacename());
+    }
+
 
 
 
