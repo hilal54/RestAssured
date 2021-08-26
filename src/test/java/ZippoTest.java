@@ -4,8 +4,11 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -325,6 +328,43 @@ public class ZippoTest {
         System.out.println("limit = " + limit);
     }
 
+    @Test
+    public void extractingJsonPathIntList()
+    {
+        //    data[0].id -> 1.elemanın yani indexi 0 olanın id si
+        //    data.id -> tum id ler demekdir list<int>
+
+       List<Integer> idler=
+                given()
+                        .param("page",1)
+                        //.log().uri()
+
+                        .when()
+                        .get("https://gorest.co.in/public/v1/users")
+
+                        .then()
+                        //.log().body()
+                        .extract().path("data.id");
+        ;
+
+        System.out.println("idler = " + idler);
+    }
+
+    @Test
+    public void extractingJsonPathStringList()
+    {
+        List<String> koyler= given()
+                //.spec(requestSpecification)
+                .when()
+                .get("/tr/01000")
+                .then()
+                //.spec(responseSpecification)
+                .extract().path("places.'place name'")  // extract metodu ile given ile başlayan satır, bir değer döndürür hale geldi
+                ;
+
+        System.out.println("koyler = " + koyler);
+        Assert.assertTrue(koyler.contains("Büyükdikili Köyü"));
+    }
 
 
 
