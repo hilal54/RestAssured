@@ -182,7 +182,32 @@ public class Task {
         System.out.println("todo.getId() = " + todo.getId());
     }
 
+    /** Task 7 - Ödev 1
+     * create a request to https://jsonplaceholder.typicode.com/todos
+     * expect status 200
+     * Converting Array Into Array of POJOs
+     */
 
+
+    @Test
+    public void task7()
+    {
+         given()
+
+                .when()
+                .get("https://jsonplaceholder.typicode.com/todos")
+
+                .then()
+                .log().body()
+
+         ;
+    }
+
+    /** Task 8 - Ödev 2
+     * create a request to https://jsonplaceholder.typicode.com/todos
+     * expect status 200
+     * Converting Array Into List of POJOs
+     */
 
 }
 
