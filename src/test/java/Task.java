@@ -1,3 +1,4 @@
+import POJO.ToDo;
 import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -127,6 +128,60 @@ public class Task {
         Assert.assertFalse(completed);
 
     }
+
+    /** Task 5
+     * create a request to https://jsonplaceholder.typicode.com/todos
+     * expect status 200
+     * expect content type JSON
+     * expect third item have:
+     *      title = "fugiat veniam minus"
+     *      userId = 1
+     */
+
+    @Test
+    public void task5()
+    {
+        given()
+
+                .when()
+                .get("https://jsonplaceholder.typicode.com/todos")
+
+                .then()
+                .statusCode(200)
+                .log().body()
+                .contentType(ContentType.JSON)
+                .body("title[2]",equalTo("fugiat veniam minus"))
+                .body("userId[2]", equalTo(1))
+        ;
+    }
+
+
+    /** Task 6
+     * create a request to https://jsonplaceholder.typicode.com/todos/2
+     * expect status 200
+     * Converting Into POJO
+     */
+
+    @Test
+    public void task6()
+    {
+        ToDo todo=
+        given()
+
+                .when()
+                .get("https://jsonplaceholder.typicode.com/todos/2")
+
+                .then()
+                .log().body()
+                .statusCode(200)
+                .extract().as(ToDo.class)
+        ;
+
+        System.out.println("todo = " + todo);
+        System.out.println("todo.getTitle() = " + todo.getTitle());
+        System.out.println("todo.getId() = " + todo.getId());
+    }
+
 
 
 }
