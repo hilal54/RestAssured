@@ -14,23 +14,20 @@ public class GoRestUsersTests {
 
 
     @Test
-    public void getUsers()
-    {
-        List<User> userList=
-        given()
+    public void getUsers() {
+        List<User> userList =
+                given()
 
-                .when()
-                .get("https://gorest.co.in/public/v1/users")
+                        .when()
+                        .get("https://gorest.co.in/public/v1/users")
 
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .log().body()
-                .extract().jsonPath().getList("data", User.class)
-        ;
+                        .then()
+                        .statusCode(200)
+                        .contentType(ContentType.JSON)
+                        .log().body()
+                        .extract().jsonPath().getList("data", User.class);
 
-        for (User u: userList)
-        {
+        for (User u : userList) {
             System.out.println("u = " + u);
         }
 
@@ -57,39 +54,36 @@ public class GoRestUsersTests {
     int userID;
 
     @Test
-    public void createUser()
-    {
-        userID=
-        given()
-                .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
-                .contentType(ContentType.JSON)
-                .body("{\"name\":\"ismet\", \"gender\":\"male\", \"email\":\""+getRandomEmail()+"\", \"status\":\"active\"}")
+    public void createUser() {
+        userID =
+                given()
+                        .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                        .contentType(ContentType.JSON)
+                        .body("{\"name\":\"ismet\", \"gender\":\"male\", \"email\":\"" + getRandomEmail() + "\", \"status\":\"active\"}")
 
-                .when()
-                .post("https://gorest.co.in/public/v1/users")
+                        .when()
+                        .post("https://gorest.co.in/public/v1/users")
 
-                .then()
-                .log().body()
-                .statusCode(201)
-                .contentType(ContentType.JSON)
-                .extract().jsonPath().getInt("data.id")
+                        .then()
+                        .log().body()
+                        .statusCode(201)
+                        .contentType(ContentType.JSON)
+                        .extract().jsonPath().getInt("data.id")
         ;
 
         System.out.println("userID = " + userID);
     }
 
-    public String getRandomEmail()
-    {
+    public String getRandomEmail() {
         String randomString = RandomStringUtils.randomAlphabetic(8).toLowerCase();
-        return randomString+"@gmail.com";
+        return randomString + "@gmail.com";
     }
 
 
     @Test(dependsOnMethods = "createUser")
-    public void getUserByID()
-    {
+    public void getUserByID() {
         given()
-                .pathParam("userID",userID)
+                .pathParam("userID", userID)
                 .log().uri()
                 .when()
                 .get("https://gorest.co.in/public/v1/users/{userID}")
@@ -101,13 +95,29 @@ public class GoRestUsersTests {
         ;
     }
 
+    // updateUserById yapınız.
 
+    @Test(dependsOnMethods = "createUser")
+    public void updateUserById() {
 
+        String isim="ismet1 temur2";
 
+        given()
+                .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body("{\"name\":\""+isim+"\"}")
+                .pathParam("userID",userID)
+                //.log().uri()
 
+                .when()
+                .put("https://gorest.co.in/public/v1/users/{userID}")
 
-
-
+                .then()
+                //.log().body()
+                .statusCode(200)
+                .body("data.name", equalTo(isim))
+        ;
+    }
 
 
 }
