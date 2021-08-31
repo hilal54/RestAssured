@@ -2,6 +2,7 @@ package goRest;
 
 import goRest.Model.User;
 import io.restassured.http.ContentType;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -36,11 +37,72 @@ public class GoRestUsersTests {
         // Daha önceki örneklerde Clas dönüşümleri için tüm yapıya karşılık gelen
         // gereken tüm classları yazarak dönüştürüp istediğimiz elemanlara ulaşıyorduk.
         // Burada ise aradaki bir veriyi clasa dönüştürerek bir list olarak almamıza
-        // imkan veren JSONPATH i kullandık.
+        // imkan veren JSONPATH i kullandık.Böylece tek class ise veri alınmış oldu
+        // diğer class lara gerek kalmadan
 
         // path : class veya tip dönüşümüne imkan veremeyen direk veriyi verir. List<String> gibi
         // jsonPath : class dönüşümüne ve tip dönüşümüne izin vererek , veriyi istediğimiz formatta verir.
     }
+
+// Create User için POSTMAN de yapılanlar
+
+//    JSON olarak gidecek body  {"name":"{{$randomFullName}}", "gender":"male", "email":"{{$randomEmail}}", "status":"active"}
+//
+//    header ın içine
+//    Authorization  Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f
+//
+//    POST ile https://gorest.co.in/public/v1/users çağırdık
+//    id yi okuduk ve global bir değişkene attık ki, diğer reqest larde kullanabilelim
+
+    int userID;
+
+    @Test
+    public void createUser()
+    {
+        userID=
+        given()
+                .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body("{\"name\":\"ismet\", \"gender\":\"male\", \"email\":\""+getRandomEmail()+"\", \"status\":\"active\"}")
+
+                .when()
+                .post("https://gorest.co.in/public/v1/users")
+
+                .then()
+                .log().body()
+                .statusCode(201)
+                .contentType(ContentType.JSON)
+                .extract().jsonPath().getInt("data.id")
+        ;
+
+        System.out.println("userID = " + userID);
+    }
+
+    public String getRandomEmail()
+    {
+        String randomString = RandomStringUtils.randomAlphabetic(8).toLowerCase();
+        return randomString+"@gmail.com";
+    }
+
+
+    @Test
+    public void getUserByID()
+    {
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
 
 
 }
