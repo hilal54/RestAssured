@@ -3,6 +3,8 @@ import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
@@ -192,15 +194,18 @@ public class Task {
     @Test
     public void task7()
     {
+        ToDo[] todos=
          given()
 
                 .when()
                 .get("https://jsonplaceholder.typicode.com/todos")
 
                 .then()
-                .log().body()
-
+                //.log().body()
+                .extract().as(ToDo[].class)
          ;
+
+        System.out.println("todos = " + Arrays.toString(todos));
     }
 
     /** Task 8 - Ödev 2
