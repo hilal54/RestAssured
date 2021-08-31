@@ -85,15 +85,20 @@ public class GoRestUsersTests {
     }
 
 
-    @Test
+    @Test(dependsOnMethods = "createUser")
     public void getUserByID()
     {
+        given()
+                .pathParam("userID",userID)
+                .log().uri()
+                .when()
+                .get("https://gorest.co.in/public/v1/users/{userID}")
 
-
-
-
-
-
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("data.id", equalTo(userID))
+        ;
     }
 
 
