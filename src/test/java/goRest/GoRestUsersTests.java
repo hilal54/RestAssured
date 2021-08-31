@@ -100,7 +100,7 @@ public class GoRestUsersTests {
     @Test(dependsOnMethods = "createUser")
     public void updateUserById() {
 
-        String isim="ismet1 temur2";
+        String isim="ismet1 temur3";
 
         given()
                 .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
