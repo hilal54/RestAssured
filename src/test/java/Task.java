@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -213,6 +214,25 @@ public class Task {
      * expect status 200
      * Converting Array Into List of POJOs
      */
+
+    @Test
+    public void task8()
+    {
+        ToDo[] todos=
+                given()
+
+                        .when()
+                        .get("https://jsonplaceholder.typicode.com/todos")
+
+                        .then()
+                        //.log().body()
+                        .extract().as(ToDo[].class)
+                ;
+
+        List<ToDo> todosList= Arrays.asList(todos);
+
+        System.out.println("todos = " + todosList);
+    }
 
 }
 
