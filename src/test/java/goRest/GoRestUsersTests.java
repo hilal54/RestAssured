@@ -80,7 +80,7 @@ public class GoRestUsersTests {
     }
 
 
-    @Test(dependsOnMethods = "createUser")
+    @Test(dependsOnMethods = "createUser", priority = 1)
     public void getUserByID() {
         given()
                 .pathParam("userID", userID)
@@ -96,8 +96,7 @@ public class GoRestUsersTests {
     }
 
     // updateUserById yapınız.
-
-    @Test(dependsOnMethods = "createUser")
+    @Test(dependsOnMethods = "createUser", priority = 2)
     public void updateUserById() {
 
         String isim="ismet1 temur3";
@@ -119,5 +118,53 @@ public class GoRestUsersTests {
         ;
     }
 
+    // deleteUserById
+    @Test(dependsOnMethods = "createUser", priority = 3)
+    public void deleteUserById()
+    {
+        given()
+                .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("userID",userID)  // int sayi=5 gibi
+                .log().uri()
+                .when()
+                .delete("https://gorest.co.in/public/v1/users/{userID}")
+                             //https://gorest.co.in/public/v1/users/1871
+                //param olsa idi : https://gorest.co.in/public/v1/users/%7BuserID%7D?userID=1873
+                .then()
+                .statusCode(204)
+                .log().body()
+        ;
+    }
+
+    // deleteUserByIdNegative
+    @Test(dependsOnMethods = "deleteUserById")
+    public void deleteUserByIdNegative()
+    {
+        given()
+                .header("Authorization","Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("userID",userID)
+
+                .when()
+                .delete("https://gorest.co.in/public/v1/users/{userID}")
+
+                .then()
+                .statusCode(404)
+        ;
+    }
+
+
+
+
+
+
+
+
+
 
 }
+
+
+
+
+
+
