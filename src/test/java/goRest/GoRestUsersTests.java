@@ -211,7 +211,32 @@ public class GoRestUsersTests {
         System.out.println("userID = " + userID);
     }
 
+    @Test
+    public void createUserBodyObject() {
+        User newUser=new User(); // bir nesne oluşturup onu da gönderebiliriz, yine JSON a çevriliyor
+        newUser.setName("ismet");
+        newUser.setGender("male");
+        newUser.setEmail(getRandomEmail());
+        newUser.setStatus("active");
 
+        userID =
+                given()
+                        .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                        .contentType(ContentType.JSON)
+                        .body(newUser)
+                        .log().body() // json olarak gittği görülebilir
+                        .when()
+                        .post("https://gorest.co.in/public/v1/users")
+
+                        .then()
+                        //.log().body()
+                        .statusCode(201)
+                        .contentType(ContentType.JSON)
+                        .extract().jsonPath().getInt("data.id")
+        ;
+
+        System.out.println("userID = " + userID);
+    }
 
 
 
