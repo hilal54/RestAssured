@@ -2,9 +2,11 @@ package goRest;
 
 import goRest.Model.User;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
+import java.awt.image.RescaleOp;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
@@ -150,6 +152,35 @@ public class GoRestUsersTests {
                 .then()
                 .statusCode(404)
         ;
+    }
+
+
+    @Test
+    public void responsSample()
+    {
+        Response donenSonuc= // dönen sonuçların hepsi tek bir değişkene atıldı
+        given()
+
+                .when()
+                .get("https://gorest.co.in/public/v1/users")
+
+                .then()
+                .log().body()
+                .extract().response()
+        ;
+
+        //Şimdi lazım olan istediklerimizi tekrar request yapmadan tek tek alabiliriz.
+        List<User> userList= donenSonuc.jsonPath().getList("data", User.class);
+        int total=donenSonuc.jsonPath().getInt("meta.pagination.total");
+        int limit=donenSonuc.jsonPath().getInt("meta.pagination.limit");
+        User firstUser = donenSonuc.jsonPath().getObject("data[0]", User.class);
+
+        System.out.println("userList = " + userList);
+        System.out.println("total = " + total);
+        System.out.println("limit = " + limit);
+        System.out.println("firstUser = " + firstUser);
+
+
     }
 
 
