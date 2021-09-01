@@ -7,7 +7,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 import java.awt.image.RescaleOp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -156,7 +158,7 @@ public class GoRestUsersTests {
 
 
     @Test
-    public void responsSample()
+    public void responseSample()
     {
         Response donenSonuc= // dönen sonuçların hepsi tek bir değişkene atıldı
         given()
@@ -179,12 +181,35 @@ public class GoRestUsersTests {
         System.out.println("total = " + total);
         System.out.println("limit = " + limit);
         System.out.println("firstUser = " + firstUser);
-
-
     }
 
 
+    @Test
+    public void createUserBodyMap() {
+        Map<String,String> newUser=new HashMap<>();   // verileri istersek Map olarak gönderebiliriz, Content.JSON onu JSON sa çeviriyor
+        newUser.put("name","ismet");
+        newUser.put("gender","male");
+        newUser.put("email",getRandomEmail());
+        newUser.put("status","active");
 
+        userID =
+                given()
+                        .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                        .contentType(ContentType.JSON)
+                        .body(newUser)
+
+                        .when()
+                        .post("https://gorest.co.in/public/v1/users")
+
+                        .then()
+                        .log().body()
+                        .statusCode(201)
+                        .contentType(ContentType.JSON)
+                        .extract().jsonPath().getInt("data.id")
+        ;
+
+        System.out.println("userID = " + userID);
+    }
 
 
 
