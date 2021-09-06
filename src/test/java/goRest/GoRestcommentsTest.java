@@ -1,8 +1,10 @@
 package goRest;
 
 import goRest.Model.Comment;
+import goRest.Model.CommentsBody;
 import goRest.Model.User;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.Assert;
@@ -99,8 +101,29 @@ public class GoRestcommentsTest {
     }
 
 
+    // Task 3 : https://gorest.co.in/public/v1/comments  Api sinden
+    // dönen bütün verileri tek bir nesneye dönüştürünüz
+
+    @Test
+    public void getCommentsPojo()
+    {
+                CommentsBody commentsBody=
+                given()
+                        .when()
+                        .get("https://gorest.co.in/public/v1/comments")
+
+                        .then()
+                        //.log().body()
+                        .extract().as(CommentsBody.class);
+        ;
+        // artık elimde response yani tüm datanın NESNE hali var
+
+        System.out.println("commentsBody.getData().get(5).getEmail() = " + commentsBody.getData().get(5).getEmail());
+        System.out.println("commentsBody.getMeta().getPagination().getLinks().getCurrent() = " + commentsBody.getMeta().getPagination().getLinks().getCurrent());
 
 
+
+    }
 
 
 
