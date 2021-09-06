@@ -5,6 +5,7 @@ import goRest.Model.User;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.awt.image.RescaleOp;
@@ -46,8 +47,69 @@ public class GoRestcommentsTest {
         for (Comment c:  listComments2) { // ClassCastException
             System.out.println("l2 c = " + c);
         }
-
     }
+
+    // Bütün Comment lardaki emailleri bir list olarak alınız ve
+    // içinde "acharya_rajinder@ankunding.biz" olduğunu doğrulayınız.
+
+   @Test
+   public void getEmailList()
+   {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
+       List<String> emailList=
+                given()
+                .when()
+                .get("https://gorest.co.in/public/v1/comments")
+
+                .then()
+                //.log().body()
+                .extract().path("data.email");  // Stringlerden oluşan bir List<String>
+        ;
+
+       System.out.println("emailList = " + emailList);
+       for(String s: emailList)
+       {
+           System.out.println("s = " + s);
+       }
+       Assert.assertTrue(emailList.contains("acharya_rajinder@ankunding.biz"));
+   }
+
+
+    @Test
+    public void getEmailListRespons()
+    {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
+        Response response=
+                given()
+                        .when()
+                        .get("https://gorest.co.in/public/v1/comments")
+
+                        .then()
+                        //.log().body()
+                        .extract().response();
+        ;
+
+        List<String> emailList=response.path("data.email");
+        List<String> emailList2=response.jsonPath().getList("data.email", String.class);
+
+        System.out.println("emailList = " + emailList2);
+        for(String s: emailList2)
+        {
+            System.out.println("s = " + s);
+        }
+        Assert.assertTrue(emailList2.contains("acharya_rajinder@ankunding.biz"));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
