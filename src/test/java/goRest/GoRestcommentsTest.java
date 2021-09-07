@@ -170,7 +170,7 @@ public class GoRestcommentsTest {
         //Assert.assertTrue(returnPostBody.equalsIgnoreCase(postBody));
     }
 
-   // Task 6 : Create edilen Comment ı siliniz. Status kodu kontorl ediniz 204
+    // Task 6 : Create edilen Comment ı siliniz. Status kodu kontorl ediniz 204
     @Test(dependsOnMethods = "CommentCreate", priority = 2)
     public void CommentDelete()
     {
@@ -187,7 +187,22 @@ public class GoRestcommentsTest {
         ;
     }
 
+    // Task 6 : Silinen Comment ın negatif testini tekrar silmeye çalışarak yapınız.
+    @Test(dependsOnMethods = "CommentCreate", priority = 3)
+    public void CommentDeleteNegative()
+    {
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("commentId", commentId)
 
+                .when()
+                .delete("https://gorest.co.in/public/v1/comments/{commentId}")
+
+                .then()
+                .log().body()
+                .statusCode(404)
+        ;
+    }
 
 
 
