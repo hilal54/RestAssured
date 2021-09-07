@@ -127,34 +127,49 @@ public class GoRestcommentsTest {
         comment.setEmail("ismet@gmail.com");
         comment.setBody("Önce manuel, sonra atumation");
 
-        commentId=
-        given()
-                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
-                .body(comment)
-                .contentType(ContentType.JSON)
+        commentId =
+                given()
+                        .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                        .body(comment)
+                        .contentType(ContentType.JSON)
 
-                .when()
-                .post("https://gorest.co.in/public/v1/posts/68/comments")// 68 burada konu id ye karşılık gelen 68 i kullandık
+                        .when()
+                        .post("https://gorest.co.in/public/v1/posts/68/comments")// 68 burada konu id ye karşılık gelen 68 i kullandık
 
-                .then()
-                .log().body()
-                .extract().jsonPath().getInt("data.id")
+                        .then()
+                        .log().body()
+                        .extract().jsonPath().getInt("data.id")
         ;
 
         System.out.println("commentId = " + commentId);
     }
 
+    // Task 7 : Create edilen Comment ı get yapınız.
+    @Test(dependsOnMethods = "CommentCreate")
+    public void getComment() {
+        given()
+                .pathParam("commentId", commentId)
+                .when()
+                .get("https://gorest.co.in/public/v1/comments/{commentId}")
+
+                .then()
+                .log().body()
+                .body("data.id", equalTo(commentId))
+                .statusCode(200)
+        ;
+    }
+
+
     // Task 5 : Create edilen Comment ı n body kısmını güncelleyiniz.Sonrasında güncellemeyi kontrol ediniz.
 
     @Test(dependsOnMethods = "CommentCreate", priority = 1)
-    public void CommentUpdate()
-    {
-        String postBody="Önce manuel, sonra atumation";
+    public void CommentUpdate() {
+        String postBody = "Önce manuel, sonra atumation";
 
-       // String returnPostBody=
+        // String returnPostBody=
         given()
                 .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
-                .body("{\"body\": \""+postBody+"\"}")
+                .body("{\"body\": \"" + postBody + "\"}")
                 .contentType(ContentType.JSON)
                 .pathParam("commentId", commentId)
                 .log().body()
@@ -172,8 +187,7 @@ public class GoRestcommentsTest {
 
     // Task 6 : Create edilen Comment ı siliniz. Status kodu kontorl ediniz 204
     @Test(dependsOnMethods = "CommentCreate", priority = 2)
-    public void CommentDelete()
-    {
+    public void CommentDelete() {
         given()
                 .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
                 .pathParam("commentId", commentId)
@@ -188,9 +202,8 @@ public class GoRestcommentsTest {
     }
 
     // Task 6 : Silinen Comment ın negatif testini tekrar silmeye çalışarak yapınız.
-    @Test(dependsOnMethods = "CommentCreate", priority = 3)
-    public void CommentDeleteNegative()
-    {
+    @Test(dependsOnMethods = "CommentDelete")
+    public void CommentDeleteNegative() {
         given()
                 .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
                 .pathParam("commentId", commentId)
@@ -203,9 +216,6 @@ public class GoRestcommentsTest {
                 .statusCode(404)
         ;
     }
-
-
-
 
 
 }
