@@ -23,7 +23,7 @@ public class GoRestcommentsTest {
     //         List olarak alınız.
 
 
-    @Test
+    @Test(enabled = false)
     public void getComments() {
         Response response =
                 given()
@@ -52,7 +52,7 @@ public class GoRestcommentsTest {
     // Bütün Comment lardaki emailleri bir list olarak alınız ve
     // içinde "acharya_rajinder@ankunding.biz" olduğunu doğrulayınız.
 
-    @Test
+    @Test(enabled = false)
     public void getEmailList() {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
         List<String> emailList =
                 given()
@@ -72,7 +72,7 @@ public class GoRestcommentsTest {
     }
 
 
-    @Test
+    @Test(enabled = false)
     public void getEmailListRespons() {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
         Response response =
                 given()
@@ -98,7 +98,7 @@ public class GoRestcommentsTest {
     // Task 3 : https://gorest.co.in/public/v1/comments  Api sinden
     // dönen bütün verileri tek bir nesneye dönüştürünüz
 
-    @Test
+    @Test(enabled = false)
     public void getCommentsPojo() {
         CommentsBody commentsBody =
                 given()
@@ -146,7 +146,7 @@ public class GoRestcommentsTest {
 
     // Task 5 : Create edilen Comment ı n body kısmını güncelleyiniz.Sonrasında güncellemeyi kontrol ediniz.
 
-    @Test(dependsOnMethods = "CommentCreate")
+    @Test(dependsOnMethods = "CommentCreate", priority = 1)
     public void CommentUpdate()
     {
         String postBody="Önce manuel, sonra atumation";
@@ -170,8 +170,22 @@ public class GoRestcommentsTest {
         //Assert.assertTrue(returnPostBody.equalsIgnoreCase(postBody));
     }
 
+   // Task 6 : Create edilen Comment ı siliniz. Status kodu kontorl ediniz 204
+    @Test(dependsOnMethods = "CommentCreate", priority = 2)
+    public void CommentDelete()
+    {
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("commentId", commentId)
 
+                .when()
+                .delete("https://gorest.co.in/public/v1/comments/{commentId}")
 
+                .then()
+                .log().body()
+                .statusCode(204)
+        ;
+    }
 
 
 
