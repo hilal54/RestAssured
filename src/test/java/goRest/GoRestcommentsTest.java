@@ -24,20 +24,18 @@ public class GoRestcommentsTest {
 
 
     @Test
-    public void getComments()
-    {
-        Response response=
-         given()
-                 .when()
-                 .get("https://gorest.co.in/public/v1/comments")
+    public void getComments() {
+        Response response =
+                given()
+                        .when()
+                        .get("https://gorest.co.in/public/v1/comments")
 
-                 .then()
-                 //.log().body()
-                 .extract().response()
-        ;
+                        .then()
+                        //.log().body()
+                        .extract().response();
 
-        List<Comment> listComments1= response.jsonPath().getList("data");
-        List<Comment> listComments2= response.jsonPath().getList("data", Comment.class);
+        List<Comment> listComments1 = response.jsonPath().getList("data");
+        List<Comment> listComments2 = response.jsonPath().getList("data", Comment.class);
 
         System.out.println("listComments1 = " + listComments1); // itemleri nesne olarak görmüyor
         System.out.println("listComments2 = " + listComments2);
@@ -46,7 +44,7 @@ public class GoRestcommentsTest {
 //            System.out.println("l1 c = " + c); //c.toString()
 //        }
 
-        for (Comment c:  listComments2) { // ClassCastException
+        for (Comment c : listComments2) { // ClassCastException
             System.out.println("l2 c = " + c);
         }
     }
@@ -54,32 +52,29 @@ public class GoRestcommentsTest {
     // Bütün Comment lardaki emailleri bir list olarak alınız ve
     // içinde "acharya_rajinder@ankunding.biz" olduğunu doğrulayınız.
 
-   @Test
-   public void getEmailList()
-   {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
-       List<String> emailList=
+    @Test
+    public void getEmailList() {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
+        List<String> emailList =
                 given()
-                .when()
-                .get("https://gorest.co.in/public/v1/comments")
+                        .when()
+                        .get("https://gorest.co.in/public/v1/comments")
 
-                .then()
-                //.log().body()
-                .extract().path("data.email");  // Stringlerden oluşan bir List<String>
+                        .then()
+                        //.log().body()
+                        .extract().path("data.email");  // Stringlerden oluşan bir List<String>
         ;
 
-       System.out.println("emailList = " + emailList);
-       for(String s: emailList)
-       {
-           System.out.println("s = " + s);
-       }
-       Assert.assertTrue(emailList.contains("acharya_rajinder@ankunding.biz"));
-   }
+        System.out.println("emailList = " + emailList);
+        for (String s : emailList) {
+            System.out.println("s = " + s);
+        }
+        Assert.assertTrue(emailList.contains("acharya_rajinder@ankunding.biz"));
+    }
 
 
     @Test
-    public void getEmailListRespons()
-    {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
-        Response response=
+    public void getEmailListRespons() {  // data[0].email  -> 1. email  , bütüm emailler için ise -> data.email
+        Response response =
                 given()
                         .when()
                         .get("https://gorest.co.in/public/v1/comments")
@@ -89,12 +84,11 @@ public class GoRestcommentsTest {
                         .extract().response();
         ;
 
-        List<String> emailList=response.path("data.email");
-        List<String> emailList2=response.jsonPath().getList("data.email", String.class);
+        List<String> emailList = response.path("data.email");
+        List<String> emailList2 = response.jsonPath().getList("data.email", String.class);
 
         System.out.println("emailList = " + emailList2);
-        for(String s: emailList2)
-        {
+        for (String s : emailList2) {
             System.out.println("s = " + s);
         }
         Assert.assertTrue(emailList2.contains("acharya_rajinder@ankunding.biz"));
@@ -105,9 +99,8 @@ public class GoRestcommentsTest {
     // dönen bütün verileri tek bir nesneye dönüştürünüz
 
     @Test
-    public void getCommentsPojo()
-    {
-                CommentsBody commentsBody=
+    public void getCommentsPojo() {
+        CommentsBody commentsBody =
                 given()
                         .when()
                         .get("https://gorest.co.in/public/v1/comments")
@@ -121,12 +114,35 @@ public class GoRestcommentsTest {
         System.out.println("commentsBody.getData().get(5).getEmail() = " + commentsBody.getData().get(5).getEmail());
         System.out.println("commentsBody.getMeta().getPagination().getLinks().getCurrent() = " + commentsBody.getMeta().getPagination().getLinks().getCurrent());
 
-
-
     }
 
+    int commentId;
 
+    // Task 4 : https://gorest.co.in/public/v1/comments  Api sine
+    // 1 Comments Create ediniz.
+    @Test
+    public void CommentCreate() {
+        Comment comment = new Comment();
+        comment.setName("ismet temur");
+        comment.setEmail("ismet@gmail.com");
+        comment.setBody("Önce manuel, sonra atumation");
 
+        commentId=
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .body(comment)
+                .contentType(ContentType.JSON)
+
+                .when()
+                .post("https://gorest.co.in/public/v1/posts/68/comments")// 68 burada konu id ye karşılık gelen 68 i kullandık
+
+                .then()
+                .log().body()
+                .extract().jsonPath().getInt("data.id")
+        ;
+
+        System.out.println("commentId = " + commentId);
+    }
 
 
 
