@@ -144,6 +144,31 @@ public class GoRestcommentsTest {
         System.out.println("commentId = " + commentId);
     }
 
+    // Task 5 : Create edilen Comment ı n body kısmını güncelleyiniz.Sonrasında güncellemeyi kontrol ediniz.
+
+    @Test(dependsOnMethods = "CommentCreate")
+    public void CommentUpdate()
+    {
+        String postBody="Önce manuel, sonra atumation";
+
+       // String returnPostBody=
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .body("{\"body\": \""+postBody+"\"}")
+                .contentType(ContentType.JSON)
+                .pathParam("commentId", commentId)
+                .log().body()
+                .when()
+                .put("https://gorest.co.in/public/v1/comments/{commentId}")
+
+                .then()
+                .log().body()
+                //.extract().path("data.body")
+                .body("data.body", equalTo(postBody))
+        ;
+
+        //Assert.assertTrue(returnPostBody.equalsIgnoreCase(postBody));
+    }
 
 
 

@@ -7,6 +7,12 @@ public class Comment {
     private String email;
     private String body;
 
+    public Comment() {
+        this.name = "";
+        this.email = "";
+        this.body = "";
+    }
+
     public int getId() {
         return id;
     }
