@@ -1,6 +1,7 @@
 package goRest;
 
 import goRest.Model.Post;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -12,13 +13,19 @@ public class GoRestPostsTest {
     // Task 1 : https://gorest.co.in/public/v1/posts  API sinden dönen data bilgisini bir class yardımıyla
     // List ini alınız.
 
+    @BeforeClass
+    public void startUp()
+    {
+        baseURI ="https://gorest.co.in/public/v1";
+    }
+
     @Test
     public void getAllPosts() {
         List<Post> postList=
         given()
 
                 .when()
-                .get("https://gorest.co.in/public/v1/posts")
+                .get("/posts")
 
                 .then()
                 .extract().jsonPath().getList("data", Post.class)
@@ -29,6 +36,43 @@ public class GoRestPostsTest {
             System.out.println("p = " + p);
         }
     }
+
+    // Task 2 : https://gorest.co.in/public/v1/posts  API sinden sadece 1 kişiye ait postları listeletiniz.
+    //  https://gorest.co.in/public/v1/users/87/posts
+
+    @Test
+    public void getUserPosts()
+    {
+        List<Post> postUserList=
+                given()
+
+                        .when()
+                        .get("/users/87/posts")
+
+                        .then()
+                        .extract().jsonPath().getList("data", Post.class)
+                ;
+
+        for (Post p: postUserList)
+        {
+            System.out.println("p = " + p);
+        }
+
+    }
+
+    // Task 3 : https://gorest.co.in/public/v1/posts  API sinden dönen bütün bilgileri tek bir nesneye atınız
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
