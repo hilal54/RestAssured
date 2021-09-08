@@ -1,6 +1,7 @@
 package goRest;
 
 import goRest.Model.Post;
+import goRest.Model.PostsBody;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -61,7 +62,21 @@ public class GoRestPostsTest {
     }
 
     // Task 3 : https://gorest.co.in/public/v1/posts  API sinden dönen bütün bilgileri tek bir nesneye atınız
+    @Test
+    public void getAllPostsAsObject() { // POJO
+        PostsBody postsBody=
+                given()
 
+                        .when()
+                        .get("/posts")
+
+                        .then()
+                        .extract().as(PostsBody.class)
+                ;
+
+        System.out.println("postsBody.getMeta().getPagination().getLinks().getCurrent() = " + postsBody.getMeta().getPagination().getLinks().getCurrent());
+        System.out.println("postsBody.getData().get(3).getTitle() = " + postsBody.getData().get(3).getTitle());
+    }
 
 
 
