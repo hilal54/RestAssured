@@ -2,6 +2,7 @@ package goRest;
 
 import goRest.Model.Post;
 import goRest.Model.PostsBody;
+import io.restassured.http.ContentType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -78,11 +79,67 @@ public class GoRestPostsTest {
         System.out.println("postsBody.getData().get(3).getTitle() = " + postsBody.getData().get(3).getTitle());
     }
 
+    // Task 4 : https://gorest.co.in/public/v1/posts  API sine 87 nolu usera ait bir post create ediniz.
+    // gönderdiğiniz bilgilerin kayıt olduğunu kontrol ediniz.
 
+    int postId=0;
 
+    @Test
+    public void createPost()
+    {
+        String postBody="icat çıkarmak iyidir";
+        String postTitle="icat";
 
+        Post post=new Post();
+        post.setBody(postBody);
+        post.setTitle(postTitle);
 
+        postId=
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body(post)
+                //.log().body()
+                .when()
+                .post("/users/87/posts")
+                .then()
+                .log().body()
+                .body("data.title", equalTo(postTitle))
+                .body("data.body", equalTo(postBody))
+                .extract().jsonPath().getInt("data.id");
+        ;
 
+        System.out.println("postId = " + postId);
+    }
+
+    @Test(enabled = false)
+    public void createPost2()
+    {
+        String postBody="icat çıkarmak iyidir";
+        String postTitle="icat";
+
+        Post post=new Post();
+        post.setBody(postBody);
+        post.setTitle(postTitle);
+        post.setUser_id(87);
+
+        postId=
+                given()
+                        .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                        .contentType(ContentType.JSON)
+                        .body(post)
+                        //.log().body()
+                        .when()
+                        .post("/posts")
+                        .then()
+                        .log().body()
+                        .body("data.title", equalTo(postTitle))
+                        .body("data.body", equalTo(postBody))
+                        .extract().jsonPath().getInt("data.id");
+        ;
+
+        System.out.println("postId = " + postId);
+    }
 
 
 
