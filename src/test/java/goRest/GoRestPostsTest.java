@@ -141,6 +141,49 @@ public class GoRestPostsTest {
         System.out.println("postId = " + postId);
     }
 
+    // Task 5 : Create edilen Post ı get yaparak id sini kontrol ediniz.
+    @Test(dependsOnMethods = "createPost")
+    public void getPost()
+    {
+        given()
+               .pathParam("postId", postId)
+
+                .when()
+                .get("posts/{postId}")
+
+                .then()
+                .statusCode(200)
+                //.log().body()
+                .body("data.id", equalTo(postId))
+        ;
+    }
+
+    // Task 6 : Create edilen Post un body sini güncelleyerek, bilgiyi kontrol ediniz.
+    @Test(dependsOnMethods = "createPost")
+    public void postUpdate()
+    {
+        String body="Asistan candır";
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body("{\"body\":\"" + body + "\"}")
+                .pathParam("postId", postId)
+                .when()
+                .put("posts/{postId}")
+
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("data.body", equalTo(body));
+        ;
+    }
+
+
+
+
+
+
 
 
 
