@@ -21,7 +21,7 @@ public class GoRestPostsTest {
         baseURI ="https://gorest.co.in/public/v1";
     }
 
-    @Test
+    @Test(enabled = false)
     public void getAllPosts() {
         List<Post> postList=
         given()
@@ -42,7 +42,7 @@ public class GoRestPostsTest {
     // Task 2 : https://gorest.co.in/public/v1/posts  API sinden sadece 1 kişiye ait postları listeletiniz.
     //  https://gorest.co.in/public/v1/users/87/posts
 
-    @Test
+    @Test(enabled = false)
     public void getUserPosts()
     {
         List<Post> postUserList=
@@ -63,7 +63,7 @@ public class GoRestPostsTest {
     }
 
     // Task 3 : https://gorest.co.in/public/v1/posts  API sinden dönen bütün bilgileri tek bir nesneye atınız
-    @Test
+    @Test(enabled = false)
     public void getAllPostsAsObject() { // POJO
         PostsBody postsBody=
                 given()
@@ -178,6 +178,36 @@ public class GoRestPostsTest {
                 .body("data.body", equalTo(body));
         ;
     }
+
+   // Task 8 : Create edilen Post u siliniz. Status kodu kontorl ediniz 204
+
+    @Test(dependsOnMethods = "postUpdate")
+    public void postDelete()
+    {
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("postId", postId)
+                .when()
+                .delete("posts/{postId}")
+                .then()
+                .statusCode(204)
+        ;
+    }
+
+    // Task 6 : Silinen Post u negatif testini tekrar silmeye çalışarak yapınız.
+    @Test(dependsOnMethods = "postDelete")
+    public void postDeleteNegative()
+    {
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("postId", postId)
+                .when()
+                .delete("posts/{postId}")
+                .then()
+                .statusCode(404)
+        ;
+    }
+
 
 
 

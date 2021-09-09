@@ -18,7 +18,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-public class GoRestcommentsTest {
+public class GoRestCommentsTest {
     // Task 1: https://gorest.co.in/public/v1/comments  Api sinden dönen verilerdeki data yı bir nesne yardımıyla
     //         List olarak alınız.
 
