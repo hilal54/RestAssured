@@ -26,7 +26,7 @@ public class GoTodosTest {
     // Task 1: https://gorest.co.in/public/v1/todos  Api sinden dönen verilerdeki
     //         en büyük id ye sahip todo nun id sini bulunuz.
 
-    @Test
+    @Test(enabled = false)
     public void findBigIdOfTodos() {
         List<ToDo> todoList =
                 given()
@@ -53,7 +53,7 @@ public class GoTodosTest {
     // Task 2: https://gorest.co.in/public/v1/todos  Api sinden dönen verilerdeki
     //         en büyük id ye sahip todo nun id sini BÜTÜN PAGE leri dikkate alarak bulunuz.
 
-    @Test
+    @Test(enabled = false)
     public void getBigestIdAllOfPageFor() {
         int totalPage = 2, maxID=0;
 
@@ -84,7 +84,7 @@ public class GoTodosTest {
     }
 
 
-    @Test
+    @Test(enabled = false)
     public void getBigestIdAllOfPage() {
         int totalPage = 0, page = 1, maxID = 0;
 
@@ -121,7 +121,7 @@ public class GoTodosTest {
     // Task 3 : https://gorest.co.in/public/v1/todos  Api sinden
     // dönen bütün sayfalardaki bütün idleri tek bir List e atınız.
 
-    @Test
+    @Test(enabled = false)
     public void getAllIdAllOfPage() {
         int totalPage = 0, page = 1;
         List<Integer> allToDoList = new ArrayList<>();
@@ -222,16 +222,48 @@ public class GoTodosTest {
                 .when()
                 .put("/todos/{todoId}")
                 .then()
-                //.statusCode(200)
+                .statusCode(200)
                 .log().body()
                 .body("data.status",equalTo(status))
         ;
 
     }
 
+    // Task 7 : Create edilen ToDo yu siliniz. Status kodu kontorl ediniz 204
 
+    @Test(dependsOnMethods = "updateToDo")
+    public void deleteToDo()
+    {
+        String status="completed";
 
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("todoId", todoId)
+                .log().uri()
+                .when()
+                .delete("/todos/{todoId}")
+                .then()
+                .statusCode(204)
+                .log().body()
+        ;
+    }
 
+    @Test(dependsOnMethods = "deleteToDo")
+    public void deleteNegativeToDo()
+    {
+        String status="completed";
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("todoId", todoId)
+                .log().uri()
+                .when()
+                .delete("/todos/{todoId}")
+                .then()
+                .statusCode(404)
+                .log().body()
+        ;
+    }
 
 
 
