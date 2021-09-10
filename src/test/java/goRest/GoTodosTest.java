@@ -205,7 +205,29 @@ public class GoTodosTest {
         ;
     }
 
+    // Task 6 : Create edilen ToDo u un status kısmını ("complated") güncelleyiniz.
+    //  Sonrasında güncellemeyi kontrol ediniz.
 
+    @Test(dependsOnMethods = "createTodo")
+    public void updateToDo()
+    {
+        String status="completed";
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body("{\"status\":\"" + status + "\"}")
+                .pathParam("todoId", todoId)
+                .log().uri()
+                .when()
+                .put("/todos/{todoId}")
+                .then()
+                //.statusCode(200)
+                .log().body()
+                .body("data.status",equalTo(status))
+        ;
+
+    }
 
 
 
