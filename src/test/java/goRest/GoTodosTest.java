@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class GoTodosTest {
 
     @Test
     public void getBigestIdAllOfPageFor() {
-        int totalPage = 2;
+        int totalPage = 2, maxID=0;
 
         for (int page = 1; page <= totalPage; page++) {
 
@@ -65,11 +66,18 @@ public class GoTodosTest {
                             .log().body()
                             .extract().response();
 
-            totalPage = response.jsonPath().getInt("meta.pagination.pages");
+            if (page == 1)
+                totalPage = response.jsonPath().getInt("meta.pagination.pages");
 
+            //sıradaki Page in datasını List olarak aldık
+            List<ToDo> pageList = response.jsonPath().getList("data", ToDo.class);
+
+            // elimizdeki en son maxID yi alarak bu pagedeki ID lerler karşılaştırıp en büyük ID yi almış olduk.
+            for (int i = 0; i < pageList.size(); i++) {
+                if (maxID < pageList.get(i).getId())
+                    maxID = pageList.get(i).getId();
+            }
         }
-
-
     }
 
 
@@ -105,6 +113,68 @@ public class GoTodosTest {
 
         System.out.println("maxID = " + maxID);
     }
+
+
+    // Task 3 : https://gorest.co.in/public/v1/todos  Api sinden
+    // dönen bütün sayfalardaki bütün idleri tek bir List e atınız.
+
+    @Test
+    public void getAllIdAllOfPage() {
+        int totalPage = 0, page = 1;
+        List<Integer> allToDoList = new ArrayList<>();
+
+        do {
+            Response response = // bir resposdan 2 tane extract yapacağım içi respons kullandım
+                    given()
+                            .param("page", page) // ?page=1
+                            .when()
+                            .get("/todos")
+
+                            .then()
+                            //.log().body()
+                            .extract().response();
+
+            if (page == 1) // kaç sayfa olduğunu bulduk
+                totalPage = response.jsonPath().getInt("meta.pagination.pages");
+
+            //sıradaki Page in datasını List olarak aldık
+            List<Integer> pageList = response.jsonPath().getList("data.id");
+
+            allToDoList.addAll(pageList);
+
+            page++; // sonraki sayfaya geçiliyor
+        } while (page <= totalPage);
+
+        System.out.println("allToDoList = " + allToDoList);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
