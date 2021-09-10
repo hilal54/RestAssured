@@ -158,10 +158,9 @@ public class GoTodosTest {
 
     public String getNowDateToString() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime date = LocalDateTime.now();
+        LocalDateTime date = LocalDateTime.now().plusMonths(3);
         return date.format(dateTimeFormatter);
     }
-
 
     @Test
      public void createTodo()
@@ -189,9 +188,22 @@ public class GoTodosTest {
          System.out.println("todoId = " + todoId);
      }
 
+    // Task 5 : Create edilen ToDo yu get yaparak id sini kontrol ediniz.
 
+    @Test(dependsOnMethods = "createTodo")
+    public void getToDo()
+    {
+        given()
+                .pathParam("todoId", todoId)
+                .when()
+                .get("/todos/{todoId}")
 
-
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("data.id", equalTo(todoId))
+        ;
+    }
 
 
 
