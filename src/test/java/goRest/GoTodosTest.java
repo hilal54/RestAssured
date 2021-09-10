@@ -2,10 +2,13 @@ package goRest;
 
 
 import goRest.Model.ToDo;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -148,8 +151,43 @@ public class GoTodosTest {
         System.out.println("allToDoList = " + allToDoList);
     }
 
+    int todoId;
+
+    // Task 4 : https://gorest.co.in/public/v1/todos  Api sine
+    // 1 todo Create ediniz.
+
+    public String getNowDateToString() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
+        LocalDateTime date = LocalDateTime.now();
+        return date.format(dateTimeFormatter);
+    }
 
 
+    @Test
+     public void createTodo()
+     {
+         ToDo todo=new ToDo();
+         todo.setStatus("pending");
+         todo.setTitle("Bizim asistanımız bi tane");
+         todo.setDue_on("2021-09-25");   //  todo.setDue_on(getNowDateToString());
+         todo.setUser_id(7);
+
+         todoId=
+         given()
+                 .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                 .contentType(ContentType.JSON)
+                 .body(todo)
+                 .when()
+                 .post("/todos")
+
+                 .then()
+                 .log().body()
+                 .statusCode(201)
+                 .extract().jsonPath().getInt("data.id")
+         ;
+
+         System.out.println("todoId = " + todoId);
+     }
 
 
 
