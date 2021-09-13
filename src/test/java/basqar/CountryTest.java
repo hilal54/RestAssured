@@ -50,8 +50,9 @@ public class CountryTest {
         System.out.println("cookies = " + cookies);
     }
 
-    String randomGenName=RandomStringUtils.randomAlphabetic(6);
-    String randomGenCode=RandomStringUtils.randomAlphabetic(3);
+    String randomGenName = RandomStringUtils.randomAlphabetic(6);
+    String randomGenCode = RandomStringUtils.randomAlphabetic(3);
+    String countryId;
 
     @Test
     public void createCountry() {
@@ -60,7 +61,7 @@ public class CountryTest {
         country.setName(randomGenName);
         country.setCode(randomGenCode);
 
-        given()
+        countryId = given()
                 .cookies(cookies) // gelen cookies (token bilgileri vs) i geri gönderdik
                 .contentType(ContentType.JSON)
                 .body(country)
@@ -71,10 +72,10 @@ public class CountryTest {
                 .then()
                 .statusCode(201)
                 .body("name", equalTo(randomGenName))
-                .log().body()
+                //.log().body()
+                .extract().jsonPath().getString("id")
         ;
     }
-
 
     @Test(dependsOnMethods = "createCountry")
     public void createCountryNegative() {
@@ -93,7 +94,62 @@ public class CountryTest {
 
                 .then()
                 .statusCode(400)
-                .body("message", equalTo("The Country with Name \""+randomGenName+"\" already exists."))
+                .body("message", equalTo("The Country with Name \"" + randomGenName + "\" already exists."))
+                .log().body()
+        ;
+    }
+
+    @Test(dependsOnMethods = "createCountry")
+    public void updateCountry() {
+        String updRandGenName = RandomStringUtils.randomAlphabetic(6);
+
+        Country country = new Country();
+        country.setId(countryId);
+        country.setName(updRandGenName);
+        country.setCode(randomGenCode);
+
+        given()
+                .cookies(cookies)
+                .contentType(ContentType.JSON)
+                .body(country)
+                .log().body()
+                .when()
+                .put("/school-service/api/countries")
+
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("name", equalTo(updRandGenName))
+        ;
+    }
+
+
+    @Test(dependsOnMethods = "updateCountry")
+    public void deleteById() {
+
+        given()
+                .cookies(cookies)
+                .pathParam("countryId", countryId)
+                .when()
+                .delete("/school-service/api/countries/{countryId}")
+
+                .then()
+                .statusCode(200)
+                .log().body()
+        ;
+    }
+
+    @Test(dependsOnMethods = "deleteById")
+    public void deleteByIdNegative() {
+
+        given()
+                .cookies(cookies)
+                .pathParam("countryId", countryId)
+                .when()
+                .delete("/school-service/api/countries/{countryId}")
+
+                .then()
+                .statusCode(404)
                 .log().body()
         ;
     }
