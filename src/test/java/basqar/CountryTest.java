@@ -50,10 +50,11 @@ public class CountryTest {
         System.out.println("cookies = " + cookies);
     }
 
+    String randomGenName=RandomStringUtils.randomAlphabetic(6);
+    String randomGenCode=RandomStringUtils.randomAlphabetic(3);
+
     @Test
     public void createCountry() {
-        String randomGenName=RandomStringUtils.randomAlphabetic(6);
-        String randomGenCode=RandomStringUtils.randomAlphabetic(3);
 
         Country country = new Country();
         country.setName(randomGenName);
@@ -74,6 +75,28 @@ public class CountryTest {
         ;
     }
 
+
+    @Test(dependsOnMethods = "createCountry")
+    public void createCountryNegative() {
+
+        Country country = new Country();
+        country.setName(randomGenName);
+        country.setCode(randomGenCode);
+
+        given()
+                .cookies(cookies) // gelen cookies (token bilgileri vs) i geri gönderdik
+                .contentType(ContentType.JSON)
+                .body(country)
+
+                .when()
+                .post("/school-service/api/countries")
+
+                .then()
+                .statusCode(400)
+                .body("message", equalTo("The Country with Name \""+randomGenName+"\" already exists."))
+                .log().body()
+        ;
+    }
 
 }
 
